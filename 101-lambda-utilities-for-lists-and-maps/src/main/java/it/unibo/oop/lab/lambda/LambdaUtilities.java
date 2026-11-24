@@ -15,9 +15,6 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
-
 /**
  * This class will contain four utility functions on lists and maps, of which the first one is provided as example.
  * <br>
@@ -70,11 +67,9 @@ public final class LambdaUtilities {
         /*
          * Suggestion: consider Optional.filter
          */
-        final List<Optional<T>> l = new ArrayList<>(list.size());
-        list.forEach(t -> {
-            l.add(Optional.of(t).filter(pre));
-        });
-        return l;
+        final List<Optional<T>> result = new ArrayList<>(list.size());
+        list.forEach(it -> result.add(Optional.of(it).filter(pre)));
+        return result;
     }
 
     /**
@@ -95,16 +90,16 @@ public final class LambdaUtilities {
         /*
          * Suggestion: consider Map.merge
          */
-        final Map<R, Set<T>> m = new LinkedHashMap<>();
-        list.forEach(t -> {
-            R key = op.apply(t);
-            final Set<T> s = new LinkedHashSet<>(Set.of(t));
-            m.merge(key, s, (oldSet, newSet) -> {
+        final Map<R, Set<T>> map = new LinkedHashMap<>();
+        list.forEach(it -> {
+            final R key = op.apply(it);
+            final Set<T> set = new LinkedHashSet<>(Set.of(it));
+            map.merge(key, set, (oldSet, newSet) -> {
                 oldSet.addAll(newSet);
                 return oldSet;
             });
         });
-        return m;
+        return map;
     }
 
     /**
@@ -127,11 +122,9 @@ public final class LambdaUtilities {
          *
          * Keep in mind that a map can be iterated through its forEach method
          */
-        final Map<K, V> m = new LinkedHashMap<>();
-        map.forEach((k, v) -> {
-            m.put(k, v.orElse(def.get()));
-        });
-        return m;
+        final Map<K, V> newMap = new LinkedHashMap<>();
+        map.forEach((key, value) -> newMap.put(key, value.orElseGet(def)));
+        return newMap;
     }
 
     /**
